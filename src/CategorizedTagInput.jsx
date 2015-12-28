@@ -20,12 +20,17 @@ export function isCategoryValid(c) {
     && (c.type || c.single);
 }
 
+const promiseResolve = function (value) {
+  return new Promise((resolve) => { resolve(value); });
+};
+
 const CategorizedTagInput = React.createClass({
   propTypes: {
     addNew: PropTypes.bool,
-    categories: PropTypes.arrayOf(PropTypes.object).isRequired,
+    categories: PropTypes.arrayOf(PropTypes.object),
     transformTag: PropTypes.func,
     value: PropTypes.arrayOf(PropTypes.string),
+    getCategories: PropTypes.func,
     onBlur: PropTypes.func,
     onChange: PropTypes.func
   },
@@ -39,19 +44,19 @@ const CategorizedTagInput = React.createClass({
       },
       panelOpened: false,
       tags: this.props.value || [],
-      categories: [],
+      categories: this.props.categories || [],
       addNew: this.props.addNew === undefined ? true : this.props.addNew
     };
   },
 
-  componentWillMount() {
-    if (!this.props.categories.every(isCategoryValid)) {
+  componentWillUpdate() {
+    if (!(this.state.categories && this.state.categories.every(isCategoryValid))) {
       throw new Error('invalid categories source provided for react-categorized-tag-input');
     }
   },
 
   filterCategories(input) {
-    let categories = this.props.categories.map(c => {
+    let categories = this.state.categories.map(c => {
       c = Object.assign({}, c, {
         items: c.items.filter(this.filterItems(input))
       });
@@ -96,10 +101,25 @@ const CategorizedTagInput = React.createClass({
     }, 150);
   },
 
+  getCategories(value) {
+    if (this.props.getCategories) {
+      const retval = this.props.getCategories();
+
+      return (retval.then)
+        ? this.props.getCategories(value)
+        : promiseResolve(retval);
+    } else {
+      promiseResolve(this.state.categories);
+    }
+  },
+
   onValueChange(e) {
     let value = e.target.value;
-    this.setState({ value, panelOpened: value.trim().length > 0 || !isNaN(Number(value.trim())) });
-    this.filterCategories(value);
+    this.getCategories(value)
+      .then((categories) => {
+        this.setState({ categories, value, panelOpened: value.trim().length > 0 || !isNaN(Number(value.trim())) });
+        this.filterCategories(value);
+      });
   },
 
   onTagDeleted(i) {
