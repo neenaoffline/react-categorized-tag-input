@@ -30,12 +30,17 @@ const categories = [
 ];
 
 const categoryIter = function (i) {
+  var ans = [`${i}Bird`, `Dolphin${i}`, `Apes${i}`];
+  if ( i % 4 == 0 ) {
+    ans.push(`${i}Dog`);
+    ans.push(`${i}Cat`);
+  }
   return [
     {
       id: "animals",
       title: 'Animals',
       type: 'animal',
-      items: [`${i}Dog`, `${i}Cat`, `${i}Bird`, `Dolphin${i}`, `Apes${i}`]
+      items: ans
     },
     {
       id: 'something',
@@ -45,7 +50,7 @@ const categoryIter = function (i) {
     },
     {
       id: 'food',
-      title: 'food',
+      title: 'food'
       type: 'food',
       items: ['Apple', 'Banana', 'Grapes', 'Pear']
     },
