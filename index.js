@@ -35,32 +35,34 @@ const categoryIter = function (i) {
     ans.push(`${i}Dog`);
     ans.push(`${i}Cat`);
   }
-  return [
-    {
-      id: "animals",
-      title: 'Animals',
-      type: 'animal',
-      items: ans
-    },
-    {
-      id: 'something',
-      title: 'Something cool',
-      items: ['Something cool'],
-      single: true
-    },
-    {
-      id: 'food',
-      title: 'food'
-      type: 'food',
-      items: ['Apple', 'Banana', 'Grapes', 'Pear']
-    },
-    {
-      id: 'professions',
-      title: 'Professions',
-      type: 'profession',
-      items: ['Waiter', 'Writer', 'Hairdresser', 'Policeman']
-    }
-  ];
+  return new Promise(function (resolve) {
+    setTimeout(function () {
+      resolve([{
+        id: "animals",
+        title: 'Animals',
+        type: 'animal',
+        items: ans
+      },
+        {
+          id: 'something',
+          title: 'Something cool',
+          items: ['Something cool'],
+          single: true
+        },
+        {
+          id: 'food',
+          title: 'food',
+          type: 'food',
+          items: ['Apple', 'Banana', 'Grapes', 'Pear']
+        },
+        {
+          id: 'professions',
+          title: 'Professions',
+          type: 'profession',
+          items: ['Waiter', 'Writer', 'Hairdresser', 'Policeman']
+        }]);
+    }, 5000)
+  });
 };
 
 function transformTag(category, item) {
