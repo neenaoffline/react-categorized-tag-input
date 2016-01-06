@@ -103,10 +103,10 @@ const CategorizedTagInput = React.createClass({
 
   getCategories(value) {
     if (this.props.getCategories) {
-      const retval = this.props.getCategories();
+      const retval = this.props.getCategories(value);
 
-      return (retval.then)
-        ? this.props.getCategories(value)
+      return (retval && retval.then)
+        ? retval
         : promiseResolve(retval);
     } else {
       promiseResolve(this.state.categories);
